@@ -1,0 +1,45 @@
+{
+	"name": "easy-img-transform",
+	"version": "1.0.0",
+	"main": "main.js",
+	"scripts": {
+		"start": "chcp 65001 && nodemon --exec electron . --watch ./ --ext .html,.css,.js,.json",
+		"build": "electron-builder"
+	},
+	"keywords": [],
+	"author": "LanYun",
+	"license": "ISC",
+	"dependencies": {
+		"sharp": "^0.33.5",
+		"uuid": "^11.0.3"
+	},
+	"description": "一款由 Electron 开发的图片格式转换，支持JPG、PNG、BMP、GIF、TIFF、WebP等图片格式转换。",
+	"devDependencies": {
+		"electron": "^33.2.1",
+		"electron-builder": "^25.1.8",
+		"nodemon": "^3.1.7"
+	},
+	"build": {
+		"appId": "com.lanyun.tupianzhuanhuan",
+		"productName": "图片格式转换",
+		"asar": true,
+		"directories": {
+			"output": "build"
+		},
+		"win": {
+			"target": [
+				{
+					"target": "nsis",
+					"arch": [
+						"x64"
+					]
+				}
+			]
+		},
+		"nsis": {
+			"oneClick": false,
+			"perMachine": true,
+			"allowToChangeInstallationDirectory": true
+		}
+	}
+}

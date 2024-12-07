@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="default-src 'self'; script-src 'self' 'unsafe-eval'; img-src 'self' data:; style-src 'self' 'unsafe-inline';" />
+		<script src="./assets/js/vue.global.min.js"></script>
+		<script src="./assets/js/message.js" defer></script>
+		<script src="./assets/js/index.js" defer></script>
+		<script src="./assets/bootstrap/bootstrap.min.js" defer></script>
+		<link rel="stylesheet" href="./assets/bootstrap/bootstrap.min.css" />
+		<link rel="stylesheet" href="./assets/style/index.css" />
+		<link rel="stylesheet" href="./assets/bootstrap/icon/bootstrap-icons.min.css" />
+		<title>图片格式转换</title>
+	</head>
+	<body>
+		<div id="app" v-clock>
+			<!-- 上传文件 -->
+			<div class="upload-container" v-show="uploadVisible">
+				<div class="tips text-primary mb-2">请选择需要转换的图片</div>
+				<button class="btn btn-primary px-5" @click="handleSlectImg">选择图片</button>
+				<span class="tips text-secondary">或将拖拽图片文件到虚线区域内</span>
+			</div>
+
+			<!-- 任务列表 -->
+			<div class="task-list" v-show="taskListVisilbe">
+				<div class="task-head">
+					<p class="title m-0">任务列表</p>
+					<a class="text-danger clear-btn" href="#" @click.prevent="clearTask">
+						清空列表
+					</a>
+				</div>
+				<ul class="list">
+					<li v-for="task in taskList">
+						<img :src="task.path" alt="pandaer" />
+						<p class="file-name m-0 ellipsis text-primary" :title="task.path">
+							{{ task.path }}
+						</p>
+						<p class="file-size ellipsis m-0 text-info" :title="convertMemory(task.size)">
+							{{ convertMemory(task.size) }}
+						</p>
+						<div class="transform-type-select">
+							<span class="text-success">转换为</span>
+							<select
+								v-model="task.transformType"
+								class="form-select form-select-sm"
+								aria-label=".form-select-sm example">
+								<option
+									v-for="item in ALLOW_TRANSFORM_TYPES"
+									:key="item.type"
+									:value="item.type"
+									:selected="item.selected">
+									{{ item.type }}
+								</option>
+							</select>
+						</div>
+						<button class="btn btn-outline-danger btn-sm" @click="removeTask(task)">
+							<i class="bi bi-x-lg"></i>
+						</button>
+					</li>
+				</ul>
+				<div class="controls">
+					<div class="left">
+						<button
+							class="append-btn btn btn-outline-primary btn-sm"
+							@click="handleSelectMoreImg">
+							<i class="bi bi-plus-lg"></i>
+							添加图片
+						</button>
+					</div>
+					<div class="right">
+						<select
+							v-model="transformForAll"
+							class="form-select form-select-sm"
+							aria-label=".form-select-sm example">
+							<option value="null" selected>将所有图片转换为</option>
+							<option
+								v-for="item in ALLOW_TRANSFORM_TYPES"
+								:key="item.type"
+								:value="item.type">
+								{{ item.type }}
+							</option>
+						</select>
+						<button
+							class="btn btn-success"
+							@click="handleTransform"
+							:disabled="isTransforming">
+							{{ isTransforming ? '转换中...' : '开始转换' }}
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- 底部提示 -->
+			<div class="bottom-tips px-3">
+				<div class="left">
+					<a href="#" class="text-primary" @click.prevent="handleHelpDialog('open')">
+						帮助
+					</a>
+				</div>
+				<div class="right">
+					<a href="#" class="text-primary" @click.prevent="handleAboutDialog('open')">
+						关于
+					</a>
+				</div>
+			</div>
+
+			<!-- 弹窗：帮助 -->
+			<transition>
+				<div class="modal-box" id="help-modal" v-show="helpDialogVisible">
+					<div class="modal-content">
+						<div class="dialog">
+							<div class="head text-primary">
+								<i class="bi bi-send-fill"></i>
+								帮助
+							</div>
+							<div class="content py-2">
+								<p class="text-danger">这么简单的操作还需要帮助吗？</p>
+							</div>
+							<div class="footer">
+								<button
+									id="help-close-btn"
+									class="btn btn-outline-primary btn-sm"
+									@click="handleHelpDialog('close')">
+									关闭
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</transition>
+
+			<!-- 弹窗：关于 -->
+			<transition>
+				<div class="modal-box" id="about-modal" v-show="aboutDialogVisible">
+					<div class="modal-content">
+						<div class="dialog">
+							<div class="head text-primary">
+								<i class="bi bi-info-circle-fill"></i>
+								关于
+							</div>
+							<div class="about-content py-2">
+								<img src="./assets/images/pandaer.jpg" alt="pandaer" />
+								<p class="text-primary-emphasis mt-3">邮箱：168847242@qq.com</p>
+								<p class="text-primary-emphasis my-1">QQ交流群：316054036</p>
+								<p class="text-primary-emphasis">Author by LanYun</p>
+							</div>
+							<div class="footer">
+								<button
+									id="about-close-btn"
+									class="btn btn-outline-primary btn-sm"
+									@click="handleAboutDialog('close')">
+									关闭
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</transition>
+		</div>
+	</body>
+</html>
